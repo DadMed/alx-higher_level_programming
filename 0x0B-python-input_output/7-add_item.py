@@ -1,24 +1,35 @@
 #!/usr/bin/python3
 """
-This program takes arguments and adds them to a Python list,
+This program takes command-line arguments, adds them to a Python list,
 then saves the list as a JSON representation in a file named add_item.json.
 If the file doesn't exist, it will be created.
 """
 
-from sys import argv
-from os.path import exists
+import sys
 import json
+from os.path import exists
 
-save_to_json_file = __import__("5-save_to_json_file").save_to_json_file
-load_from_json_file = __import__("6-load_from_json_file").load_from_json_file
+def save_to_json_file(my_obj, filename):
+    with open(filename, mode='w', encoding='utf-8') as file:
+        json.dump(my_obj, file)
 
-namefile = "add_item.json"
-argc = len(argv)
+def load_from_json_file(filename):
+    if exists(filename):
+        with open(filename, mode='r', encoding='utf-8') as file:
+            return json.load(file)
+    return []
 
-file_list = []
+def main():
+    namefile = "add_item.json"
+    argc = len(sys.argv)
 
-if exists(namefile):
     file_list = load_from_json_file(namefile)
 
-file_list.extend(argv[1:])
-save_to_json_file(file_list, namefile)
+    if argc > 1:
+        file_list.extend(sys.argv[1:])
+        save_to_json_file(file_list, namefile)
+    
+    print(file_list)
+
+if __name__ == "__main__":
+    main()
